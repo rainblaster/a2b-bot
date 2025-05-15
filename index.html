@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+      <h1 class="title">Hello World! </h1>
+      <p id="currentTime"></p>
+      <script src="script.js"></script>
+  </body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A2B Chatbot</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f2f2f2; }
+    .chat-container {
+      width: 400px; margin: 50px auto; background: #fff; padding: 20px;
+      border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .messages {
+      height: 300px; overflow-y: auto; margin-bottom: 10px;
+      border: 1px solid #ddd; padding: 10px; border-radius: 5px;
+      background-color: #fafafa;
+    }
+    .message { margin: 5px 0; }
+    .bot { color: #0077cc; }
+    .user { text-align: right; color: #4CAF50; }
+    input, button {
+      padding: 10px; border: 1px solid #ccc; border-radius: 4px;
+    }
+    input { width: 70%; }
+    button { background: #0077cc; color: white; border: none; cursor: pointer; }
+    button:hover { background: #005fa3; }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h2>A2B Chatbot</h2>
+    <div class="messages" id="chatbox">
+      <div class="message bot">Hi! I'm your A2B Assistant 🍽️. Ask about our South Indian menu, order food, or request support.</div>
+    </div>
+    <input type="text" id="userInput" placeholder="Type your message here..." />
+    <button onclick="handleMessage()">Send</button>
+  </div>
+
+<script>
+  const menu = [
+    { name: "Idli", price: 30, description: "Steamed rice cakes with chutney & sambar." },
+    { name: "Dosa", price: 60, description: "Crispy rice crepe with potato filling." },
+    { name: "Vada", price: 40, description: "Fried lentil donuts with sambar." },
+    { name: "Pongal", price: 50, description: "Savory rice-lentil dish with ghee." },
+    { name: "Upma", price: 45, description: "Semolina porridge with spices and vegetables." },
+    { name: "Kesari", price: 35, description: "Sweet semolina dessert with ghee and nuts." },
+    { name: "Mini Tiffin", price: 90, description: "Idli, dosa, pongal, and a sweet in one platter." },
+    { name: "Sambar Rice", price: 70, description: "Rice mixed with spicy lentil-based vegetable stew." },
+    { name: "Curd Rice", price: 60, description: "Rice with yogurt, a soothing South Indian staple." },
+    { name: "Tomato Rice", price: 65, description: "Rice tossed in tomato masala and spices." }
+  ];
+
+  const greetings = [
+    "Hello! How can I help you today?",
+    "Vanakkam! Welcome to A2B 😊",
+    "Hi there! Want to try our crispy dosas?",
+    "Namaste! Ask me anything about our dishes."
+  ];
+
+  const helpResponses = [
+    "You can type 'menu' to see all our items.",
+    "Ask me about any dish like 'Tell me about Dosa'.",
+    "Type 'Order:' followed by your name, phone, and items to place an order.",
+    "Need help? Type 'Support:' and describe the issue."
+  ];
+
+  const orderConfirmations = [
+    "Thanks for ordering! We'll prepare your food hot and fresh! 🍽️",
+    "Order received! You're going to love it 😋",
+    "Your order is confirmed. Please keep your phone handy.",
+    "Done! Your delicious meal will be ready shortly."
+  ];
+
+  const supportResponses = [
+    "Thanks! Our support team will reach out shortly.",
+    "We’ve noted your issue. Someone will contact you soon.",
+    "Support request received. Thanks for your patience.",
+    "We’re sorry for the trouble. We’re working on it now."
+  ];
+
+  function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function addMessage(text, sender = 'bot') {
+    const chatbox = document.getElementById('chatbox');
+    const msg = document.createElement('div');
+    msg.className = `message ${sender}`;
+    msg.textContent = text;
+    chatbox.appendChild(msg);
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+
+  function handleMessage() {
+    const input = document.getElementById('userInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, 'user');
+    input.value = '';
+
+    const lower = text.toLowerCase();
+
+    // Greetings
+    if (["hi", "hello", "hey", "namaste", "vanakkam"].some(greet => lower.includes(greet))) {
+      addMessage(getRandom(greetings));
+      return;
+    }
+
+    // Menu request
+    if (lower.includes("menu")) {
+      const menuText = menu.map(item => `${item.name} - ₹${item.price}`).join("\n");
+      addMessage("Here's our South Indian menu:\n" + menuText);
+      return;
+    }
+
+    // Help request
+    if (lower.includes("help") || lower.includes("what can you do")) {
+      addMessage(getRandom(helpResponses));
+      return;
+    }
+
+    // Item detail
+    const foundItem = menu.find(item => lower.includes(item.name.toLowerCase()));
+    if (foundItem) {
+      addMessage(`${foundItem.name}: ₹${foundItem.price}. ${foundItem.description}`);
+      return;
+    }
+
+    // Order
+    if (lower.startsWith("order:")) {
+      const orderText = text.slice(6).trim();
+      if (orderText.includes(",") && /\d/.test(orderText)) {
+        addMessage(getRandom(orderConfirmations));
+      } else {
+        addMessage("Please provide order in format: Order: Name, Phone, items");
+      }
+      return;
+    }
+
+    // Support
+    if (lower.startsWith("support:")) {
+      addMessage(getRandom(supportResponses));
+      return;
+    }
+
+    addMessage("Sorry, I didn't understand that. You can ask for 'menu', item names, place an 'Order:', or type 'Support:' followed by your issue.");
+  }
+</script>
+
+</body>
+</html>
